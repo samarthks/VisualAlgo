@@ -4,12 +4,63 @@ import random
 
 root = Tk()
 root.title("VisualAlgo")
-root.geometry("1000x600+300+80")
+root.geometry("1100x600+200+80")
 root.config(bg="#082A46")
 
 
-def Generate_data():
+def Generate_data(x):
+    canvas.delete("all")
+    canvas_height = 450
+    canvas_width = 1070
+    x_width = canvas_width / (len(x) + 1)
+    offset = 10
+    space_rect = 10
+    new_data = [i / max(x) for i in x]
+
+    for i, height in enumerate(new_data):
+        x0 = i * x_width + offset + space_rect
+        y0 = canvas_height - height * 400
+        x1 = (i + 1) * x_width
+        y1 = canvas_height
+        canvas.create_rectangle(x0, y0, x1, y1, fill="red")
+        canvas.create_text(
+            x0 + 2,
+            y0,
+            anchor=SW,
+            text=str(x[i]),
+            font=("arial", 14, "bold"),
+            fill="orange",
+        )
+
+
+def Algo_select():
     print("Algo:", select_algo.get())
+    try:
+        min = int(minvalue.get())
+    except:
+        min = 1
+    try:
+        max = int(maxvalue.get())
+    except:
+        max = 100
+
+    try:
+        size = int(sizevalue.get())
+    except:
+        size = 10
+
+    if min < 0 or max > 100:
+        min = 0
+        max = 100
+    if size > 80 or size < 3:
+        size = 50
+    if min > max:
+        min, max = max, min
+
+    array = []
+    for i in range(size):
+        array.append(random.randrange(min, max + 1))
+    Generate_data(array)
 
 
 select_algo = StringVar()
@@ -53,9 +104,9 @@ generate_button = Button(
     activeforeground="white",
     bd=5,
     width=12,
-    command=Generate_data,
+    command=Algo_select,
 )
-generate_button.place(x=900, y=60)
+generate_button.place(x=1000, y=60)
 sizevaluelabel = Label(
     root,
     text="Size : ",
@@ -69,8 +120,8 @@ sizevaluelabel = Label(
 sizevaluelabel.place(x=0, y=60)
 sizevalue = Scale(
     root,
-    from_=0,
-    to=30,
+    from_=5,
+    to=80,
     resolution=1,
     orient=HORIZONTAL,
     font=("arial", 14, "italic bold"),
@@ -140,7 +191,7 @@ start_button = Button(
     bd=5,
     width=12,
 )
-start_button.place(x=900, y=0)
+start_button.place(x=1000, y=0)
 
 speedlabel = Label(
     root,
@@ -158,7 +209,9 @@ speedscale = Scale(
     root,
     from_=0.1,
     to=5.0,
-    resolution=1,
+    resolution=0.5,
+    length=200,
+    digits=4,
     orient=HORIZONTAL,
     font=("arial", 14, "italic bold"),
     relief=GROOVE,
@@ -177,7 +230,7 @@ timelabel = Label(
     relief=GROOVE,
     bd=5,
 )
-timelabel.place(x=650, y=0)
+timelabel.place(x=750, y=0)
 
 timelabelans = Label(
     root,
@@ -189,8 +242,8 @@ timelabelans = Label(
     relief=GROOVE,
     bd=5,
 )
-timelabelans.place(x=760, y=0)
-canvas = Canvas(root, width=970, height=450, bg="black")
+timelabelans.place(x=860, y=0)
+canvas = Canvas(root, width=1070, height=450, bg="black")
 canvas.place(x=10, y=130)
 
 
