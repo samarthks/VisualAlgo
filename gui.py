@@ -1,14 +1,19 @@
 from tkinter import *
 from tkinter import ttk
 import random
+import time
+from Sort import bubblesort, quicksort, mergesort, insertionsort, selectionsort
 
 root = Tk()
 root.title("VisualAlgo")
 root.geometry("1100x600+200+80")
-root.config(bg="#082A46")
+root.config(bg="lightblue")
+array = []
+times = 0.0
 
 
-def Generate_data(x):
+def Generate_data(x, colorarr):
+
     canvas.delete("all")
     canvas_height = 450
     canvas_width = 1070
@@ -22,45 +27,75 @@ def Generate_data(x):
         y0 = canvas_height - height * 400
         x1 = (i + 1) * x_width
         y1 = canvas_height
-        canvas.create_rectangle(x0, y0, x1, y1, fill="red")
-        canvas.create_text(
-            x0 + 2,
-            y0,
-            anchor=SW,
-            text=str(x[i]),
-            font=("arial", 14, "bold"),
-            fill="orange",
-        )
+        canvas.create_rectangle(x0, y0, x1, y1, fill=colorarr[i])
+        # canvas.create_text(
+        #     x0 + 2,
+        #     y0,
+        #     anchor=SW,
+        #     text=str(x[i]),
+        #     font=("arial", 14, "bold"),
+        #     fill="orange",
+        # )
+        root.update()
+
+
+def Start_Sort():
+
+    global array
+    global times
+    if not array:
+        return
+    if algo_menu.get() == "Quick Sort":
+        start = time.time()
+        quicksort(array, 0, len(array) - 1, Generate_data, speedscale.get())
+        Generate_data(array, ["yellow" for x in range(len(array))])
+        end = time.time()
+    elif algo_menu.get() == "Bubble Sort":
+        start = time.time()
+        bubblesort(array, Generate_data, speedscale.get())
+        end = time.time()
+    elif algo_menu.get() == "Selection Sort":
+        start = time.time()
+        selectionsort(array, Generate_data, speedscale.get())
+        end = time.time()
+    elif algo_menu.get() == "Insertion Sort":
+        start = time.time()
+        insertionsort(array, Generate_data, speedscale.get())
+        end = time.time()
+    elif algo_menu.get() == "Choose algorithm":
+        start = time.time()
+        end = time.time()
+    elif algo_menu.get() == "Merge Sort":
+        start = time.time()
+        mergesort(array, Generate_data, speedscale.get())
+        Generate_data(array, ["lightgreen" for x in range(len(array))])
+        end = time.time()
+
+    times = end - start
+    timelabelans = Label(
+        root,
+        text=round(times, 3),
+        font=("new Roman", 12, "italic bold"),
+        bg="white",
+        width=10,
+        fg="black",
+        relief=GROOVE,
+        bd=5,
+    )
+    timelabelans.place(x=860, y=0)
 
 
 def Algo_select():
+    global array
     print("Algo:", select_algo.get())
-    try:
-        min = int(minvalue.get())
-    except:
-        min = 1
-    try:
-        max = int(maxvalue.get())
-    except:
-        max = 100
-
-    try:
-        size = int(sizevalue.get())
-    except:
-        size = 10
-
-    if min < 0 or max > 100:
-        min = 0
-        max = 100
-    if size > 80 or size < 3:
-        size = 50
-    if min > max:
-        min, max = max, min
+    min = int(minvalue.get())
+    max = int(maxvalue.get())
+    size = int(sizevalue.get())
 
     array = []
-    for i in range(size):
+    for _ in range(size):
         array.append(random.randrange(min, max + 1))
-    Generate_data(array)
+    Generate_data(array, ["red" for x in range(len(array))])
 
 
 select_algo = StringVar()
@@ -121,7 +156,7 @@ sizevaluelabel.place(x=0, y=60)
 sizevalue = Scale(
     root,
     from_=5,
-    to=80,
+    to=200,
     resolution=1,
     orient=HORIZONTAL,
     font=("arial", 14, "italic bold"),
@@ -169,7 +204,7 @@ maxvaluelabel.place(x=500, y=60)
 maxvalue = Scale(
     root,
     from_=0,
-    to=100,
+    to=500,
     resolution=1,
     orient=HORIZONTAL,
     font=("arial", 14, "italic bold"),
@@ -190,6 +225,7 @@ start_button = Button(
     activeforeground="white",
     bd=5,
     width=12,
+    command=Start_Sort,
 )
 start_button.place(x=1000, y=0)
 
@@ -211,7 +247,7 @@ speedscale = Scale(
     to=5.0,
     resolution=0.5,
     length=200,
-    digits=4,
+    digits=2,
     orient=HORIZONTAL,
     font=("arial", 14, "italic bold"),
     relief=GROOVE,
@@ -222,27 +258,16 @@ speedscale.place(x=520, y=0)
 
 timelabel = Label(
     root,
-    text="Time",
+    text="Time (seconds) ",
     font=("new Roman", 12, "italic bold"),
     bg="orange",
-    width=10,
+    width=12,
     fg="black",
     relief=GROOVE,
     bd=5,
 )
 timelabel.place(x=750, y=0)
 
-timelabelans = Label(
-    root,
-    text="total time",
-    font=("new Roman", 12, "italic bold"),
-    bg="white",
-    width=10,
-    fg="black",
-    relief=GROOVE,
-    bd=5,
-)
-timelabelans.place(x=860, y=0)
 canvas = Canvas(root, width=1070, height=450, bg="black")
 canvas.place(x=10, y=130)
 
