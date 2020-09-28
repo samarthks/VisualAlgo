@@ -28,19 +28,11 @@ def Generate_data(x, colorarr):
         x1 = (i + 1) * x_width
         y1 = canvas_height
         canvas.create_rectangle(x0, y0, x1, y1, fill=colorarr[i])
-        # canvas.create_text(
-        #     x0 + 2,
-        #     y0,
-        #     anchor=SW,
-        #     text=str(x[i]),
-        #     font=("arial", 14, "bold"),
-        #     fill="orange",
-        # )
         root.update()
 
 
 def Start_Sort():
-
+    disableButton()
     global array
     global times
     if not array:
@@ -70,7 +62,7 @@ def Start_Sort():
         mergesort(array, Generate_data, speedscale.get())
         Generate_data(array, ["lightgreen" for x in range(len(array))])
         end = time.time()
-
+    enableButton()
     times = end - start
     timelabelans = Label(
         root,
@@ -83,6 +75,8 @@ def Start_Sort():
         bd=5,
     )
     timelabelans.place(x=860, y=0)
+    
+
 
 
 def Algo_select():
@@ -110,6 +104,23 @@ mainLabel = Label(
     bd=5,
 )
 mainLabel.place(x=0, y=0)
+
+
+def disableButton():
+    sizevalue.configure(state=DISABLED)
+    maxvalue.configure(state=DISABLED)
+    minvalue.configure(state=DISABLED)
+    generate_button.configure(state=DISABLED)
+    speedscale.configure(state=DISABLED)
+    algo_menu.configure(state=DISABLED)
+def enableButton():
+    sizevalue.configure(state="normal")
+    maxvalue.configure(state="normal")
+    minvalue.configure(state="normal")
+    generate_button.configure(state="normal")
+    speedscale.configure(state="normal")
+    algo_menu.configure(state="normal")   
+
 
 algo_menu = ttk.Combobox(
     root,
@@ -266,6 +277,8 @@ timelabel = Label(
     relief=GROOVE,
     bd=5,
 )
+
+
 timelabel.place(x=750, y=0)
 
 canvas = Canvas(root, width=1070, height=450, bg="black")
@@ -273,3 +286,4 @@ canvas.place(x=10, y=130)
 
 
 root.mainloop()
+
